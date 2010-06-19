@@ -1,9 +1,4 @@
-// TODO: "Ignore This Reviewer" link should immediately hide review and add user to the blacklist
 // TODO: only block links in the "div#reviews-other" section
-// TODO: save settings to local storage
-
-var blockedUsers = [];
-// Test settings: Doryan R.,C. C.
 
 String.prototype.trim = function() {
     // Thanks to: http://blog.stevenlevithan.com/archives/faster-trim-javascript
@@ -146,7 +141,6 @@ function addBlockReviewerLinks() {
     }
 }
 
-safari.self.tab.dispatchMessage("initYelpWithoutPitySettings");
 addBlockReviewerLinks();
 removeUnwantedReviews();
 

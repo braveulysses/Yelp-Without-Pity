@@ -103,10 +103,6 @@
    */
   function handleMessages(event) {
     switch (event.name) {
-      case "initYelpWithoutPitySettings":
-        initSettingsDatabase();
-        console.log("Initializing Yelp Without Pity settings database");
-        break;
       case "getYelpWithoutPitySettings":
         console.log("Dispatching list of blocked users to inject script");
         var blockedUsers = getBlockedUsers();
@@ -125,6 +121,7 @@
     }
   }
   
+  initSettingsDatabase();
   safari.application.addEventListener("message", handleMessages, false);
 </script>
 </head>
