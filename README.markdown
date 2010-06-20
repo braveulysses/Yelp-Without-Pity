@@ -2,7 +2,9 @@
 
 > _The problem with Vietnamese food is fish sauce._
 
-> _I'm from Chicago, so it's fair to say that I'm a pizza expert._
+> _I lived in Chicago for four weeks when I was a college student, so it's fair to say that I'm a pizza expert._
+
+> _All I wanted was a frozen marg, but the waitress didn't even speak English._
 
 > _The lack of Diet Coke ruined this meal._
 
