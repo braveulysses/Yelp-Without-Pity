@@ -37,7 +37,7 @@
       } else {
         console.log("Unknown error opening Yelp Without Pity settings DB: " + e);
       }
-      return;
+      return null;
     }
   }
   
@@ -63,6 +63,9 @@
    */
   function getBlockedUsers() {
     var db = getSettingsDatabase();
+    if (null == db) {
+      return null;
+    }
     var blockedUsers = [];
     db.transaction(
       function(transaction) {
