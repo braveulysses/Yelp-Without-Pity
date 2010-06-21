@@ -8,13 +8,13 @@
        <key>CFBundleIdentifier</key>
        <string>net.cpl593h.yelpwithoutpity</string>
        <key>Developer Identifier</key
-       <string>YourCertifcateID</string>
+       <string>CRL6N9XLUP</string>
        <key>CFBundleVersion</key>
-       <string>0.9</string>
+       <string>0.9.0</string>
        <key>CFBundleShortVersionString</key>
-       <string>0.9</string>
+       <string>0.9.0</string>
        <key>URL</key>
-       <string>Your-.safariextz-URL</string>
+       <string>http://github.com/downloads/cobralibre/Yelp-Without-Pity/Yelp-Without-Pity.safariextz</string>
      </dict>
    </array>
 </dict>
