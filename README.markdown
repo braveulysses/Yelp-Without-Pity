@@ -15,7 +15,7 @@ If you're really old and nerdy, think of it as a killfile for Yelp.
 ## How to install and use ##
 
 1. [Enable Safari 5 extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
-2. Download [Yelp Without Pity.safariextz](http://github.com/downloads/cobralibre/Yelp-Without-Pity/Yelp-Without-Pity.safariextz).
+2. Download [Yelp Without Pity.safariextz](http://github.com/downloads/cobralibre/Yelp-Without-Pity/yelp-without-pity.safariextz).
 3. Safari will probably prompt you to install.  If it doesn't, double-click the file to install it.
 4. Go to Yelp.
 5. Log in.
