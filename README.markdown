@@ -2,26 +2,34 @@
 
 > _The problem with Vietnamese food is fish sauce._
 
-> _I lived in Chicago for four weeks when I was a college student, so it's fair to say that I'm a pizza expert._
+> _I lived in Chicago for four weeks when I was a college student, so I think I'm entitled to some strong opinions about pizza._
 
 > _All I wanted was a frozen marg, but the waitress didn't even speak English._
 
 > _The lack of Diet Coke ruined this meal._
 
-Obnoxious Yelp reviewers getting you down?  **Yelp Without Pity** is a Safari 5 extension that will hide those jerks forever.
+Obnoxious Yelp reviewers getting you down?  Had an epiphany about the incommensurability of taste?  Sick of that guy who wants to be the Hunter S. Thompson of food reviews?  If you're running Safari 5, there's **Yelp Without Pity**.  Use YWP to hide anybody you don't want to see -- forever!
 
-## Status ##
+If you're really old and nerdy, think of it as a killfile for Yelp.
 
-This is a work in progress, and is not quite ready for use.
+## How to install and use ##
 
-Ongoing problems:
+1. [Enable Safari 5 extensions](http://safariextensions.tumblr.com/post/680219521/post-how-to-enable-extensions-06-09-10).
+2. Download `Yelp Without Pity.safariextz`.
+3. Safari will probably prompt you to install.  If it doesn't, double-click the file to install it.
+4. Go to Yelp.
+5. Log in.
+6. Look up a business.  Notice how every reviewer now has a _Block This Reviewer_ link?  Click on that when you want to hide somebody forever.
 
-* Security error occurs when creating local SQL database. See [this Apple support discussion](http://discussions.apple.com/thread.jspa?threadID=2457408).
-* Audio support seems sketchy. I'll probably remove it.
+## Frequently Asked Questions ##
 
-## Acknowledgments ##
+_Do I really have to be logged in for this to work?_  Yes, but I might change that later.
 
-The sound file "short_pop_sound.mp3" is by [purple](http://www.freesfx.co.uk/users/purple/).  It is licensed under the [Creative Commons Attribution 3.0 Unported](http://creativecommons.org/licenses/by/3.0/) license.
+_I've changed my mind about blocking somebody. How do I unblock that person?_  There's currently no way to do that.
+
+_Really?_  Well, no.  But it's a pain.  You'd need to open the Web Inspector from Safari's Develop menu, then open the YWP settings database, and delete the user using a SQL query.
+
+_That's lame._  Yeah.
 
 ## License ##
 
