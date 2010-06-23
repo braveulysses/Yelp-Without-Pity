@@ -1,9 +1,19 @@
-/*                                                      , _           
+/*                                                       , _           
  * (|  |  _ |\                o_|_ |)    _       _|_    /|/ \o_|_      
  *  |  | |/ |/ |/\_   |  |  |_| |  |/\  / \_|  |  |      |__/| |  |  | 
  *   \/|/|_/|_/|_/     \/ \/  |/|_/|  |/\_/  \/|_/|_/    |   |/|_/ \/|/
  *    (|      (|                                                    (|
  */
+
+/**********************************************************************
+ *
+ * Classes
+ *
+ **********************************************************************/
+
+function YelpReviewer() {}
+YelpReviewer.prototype.id = "";
+YelpReviewer.prototype.name = "";
 
 /**********************************************************************
  *
@@ -27,14 +37,14 @@ ywpSettings.nullDataHandler = function(transaction, results) {}
 ywpSettings.getSettingsDatabase = function() { 
     try { 
         var shortName = "yelpWithoutPityDB"; 
-        var version = "1.0"; 
+        var version = "1.1"; 
         var displayName = "Yelp Without Pity Settings Database"; 
         var maxSize = 65536; 
         var db = openDatabase(shortName, version, displayName, maxSize);
         return db; 
     } catch (e) { 
-        if (e == 2) { 
-            console.log("Invalid Yelp Without Pity settings DB version."); 
+        if (e == "1.0") { 
+            console.log("Found old Yelp Without Pity settings DB version. Please remove it.");
         } else { 
             console.log("Unknown error opening Yelp Without Pity settings DB: " + e); 
         } 
@@ -47,26 +57,29 @@ ywpSettings.initSettingsDatabase = function(db) {
     db.transaction(
         function(transaction) { 
             transaction.executeSql( 
-                'CREATE TABLE IF NOT EXISTS blockedUsers(name TEXT NOT NULL PRIMARY KEY);', 
+                'CREATE TABLE IF NOT EXISTS blockedYelpers(yelper_name TEXT NOT NULL, yelper_id TEXT NOT NULL PRIMARY KEY);', 
                 [], 
                 ywpSettings.nullDataHandler,
                 ywpSettings.errorHandler 
             ); 
         }
-    ); 
+    );
 }
 
 // Gets the list of blocked users from the settings database.
-ywpSettings.getBlockedUsers = function(db, callback) {
+ywpSettings.getBlockedYelpers = function(db, callback) {
     var blockedUsers = [];
     db.transaction( 
         function(transaction) {
             transaction.executeSql( 
-                "SELECT * FROM blockedUsers;", 
+                "SELECT yelper_name, yelper_id FROM blockedYelpers;", 
                 [],
                 function(transaction, results) { 
                     for (var i=0; i < results.rows.length; i++) {
-                        blockedUsers.push(results.rows.item(i)['name']);
+                        var user = new YelpReviewer();
+                        user.name = results.rows.item(i)['yelper_name'];
+                        user.id = results.rows.item(i)['yelper_id'];
+                        blockedUsers.push(user);
                     }
                     callback(blockedUsers);
                 }, 
@@ -77,11 +90,12 @@ ywpSettings.getBlockedUsers = function(db, callback) {
 }
 
 // Adds a blocked user to the settings database.
-ywpSettings.addBlockedUser = function(db, username) {  
+ywpSettings.addBlockedUser = function(db, username, id) {  
     db.transaction(
         function(transaction) {
-            transaction.executeSql( "INSERT INTO blockedUsers (name) VALUES (?);", 
-                [ username ], 
+            transaction.executeSql(
+                "INSERT INTO blockedYelpers (yelper_name, yelper_id) VALUES (?, ?);", 
+                [ username, id ], 
                 ywpSettings.nullDataHandler, 
                 ywpSettings.errorHandler 
             ); 
@@ -117,12 +131,26 @@ Object.prototype.deleteNode = function(elem) {
 
 function getSettings(callback) {
     var db = ywpSettings.getSettingsDatabase();
-    ywpSettings.getBlockedUsers(db, callback);
+    ywpSettings.getBlockedYelpers(db, callback);
 }
 
-function saveSetting(reviewerName) {
+function saveSetting(reviewerName, reviewerId) {
     var db = ywpSettings.getSettingsDatabase();
-    ywpSettings.addBlockedUser(db, reviewerName);
+    ywpSettings.addBlockedUser(db, reviewerName, reviewerId);
+}
+
+/**********************************************************************
+ *
+ * Detect login status
+ *
+ **********************************************************************/
+
+function isLoggedIn() {
+    if (null != document.getElementById("user_identify")) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**********************************************************************
@@ -147,8 +175,8 @@ function findReview(node) {
     return null;
 }
 
-function findReviewByUser(user) {
-    var xpathExpr = "//*[@id='reviews-other']//*[text() = '" + user + "']";
+function findReviewByUser(username) {
+    var xpathExpr = "//*[@id='reviews-other']//*[text()='" + username + "']";
     var reviewerNode = document.evaluate(
         xpathExpr, 
         document, 
@@ -157,15 +185,49 @@ function findReviewByUser(user) {
         null
     );
     if (reviewerNode.snapshotLength > 0) {
-        // console.log("findReviewByUser: Found blocked user " + user);
         return findReview(reviewerNode.snapshotItem(0));
     }
 }
 
-function findReviewerName(reviewNode) {
+function findReviewById(userId) {
+    var url = "/user_details?userid=" + userId;
+    var xpathExpr = "//*[@id='reviews-other']//a[@href='" + url + "']";
+    var reviewerNode = document.evaluate(
+        xpathExpr, 
+        document, 
+        null, 
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, 
+        null
+    );
+    if (reviewerNode.snapshotLength > 0) {
+        return findReview(reviewerNode.snapshotItem(0));
+    }
+}
+
+function getIdFromUrl(url) {
+    var id = null;
+   // Typical URL: http://www.yelp.com/user_details?userid=blabblahblah
+   // This should work if other query params are present, too.
+   var queryParams = url.split("?")[1].split("&");
+   if (null != queryParams) {
+       queryParams.forEach(function(qp) {
+           var arg = qp.split("=");
+           if (arg[0] == "userid") {
+               // Unfortunately, can't break from here
+               id = arg[1];
+           }
+       });
+   }
+   return id;
+}
+
+function getReviewerInfo(reviewNode) {
     var reviewerNames = reviewNode.getElementsByClassName("reviewer_name");
     if (null != reviewerNames) {
-        return reviewerNames[0].innerText;
+        var reviewer = new YelpReviewer();
+        reviewer.name = reviewerNames[0].innerText;
+        reviewer.id = getIdFromUrl(reviewerNames[0].getAttribute("href"));
+        return reviewer;
     } else {
         return null;
     }
@@ -180,12 +242,11 @@ function findReviewerName(reviewNode) {
 function removeReviews() {
     getSettings(function(blockedUsers) {
         blockedUsers.forEach(function(user) {
-            user = user.trim();
-            var review = findReviewByUser(user);
+            var review = findReviewById(user.id);
             if (null != review) {
                 document.deleteNode(review);
             }
-        }); 
+        });
     });
 }
 
@@ -200,9 +261,9 @@ function blockLinkClickHandler(event) {
     if (window.confirm("Are you sure you want to block this person?")) {
         var reviewNode = findReview(this);
         if (null != reviewNode) {
-            var reviewerName = findReviewerName(reviewNode);
-            if (null != reviewerName) {
-                saveSetting(reviewerName);
+            var reviewer = getReviewerInfo(reviewNode);
+            if (null != reviewer) {
+                saveSetting(reviewer.name, reviewer.id);
             }
             document.deleteNode(reviewNode);
         }
@@ -217,16 +278,34 @@ function addBlockLinks() {
     var blockText = document.createTextNode("Block This Reviewer");
     blockLink.appendChild(blockText);
     
-    var blockPara = document.createElement("p");
-    blockPara.setAttribute("class", "smallest reviewIntLinks");
-    blockPara.appendChild(blockLink);
-    
-    var othersReviews = document.getElementById("reviews-other");
-    var reviewTopBars = othersReviews.getElementsByClassName("reviewTopBar");
-    for (var i=0; i < reviewTopBars.length; i++) {
-        var newBlockLink = blockPara.cloneNode(true);
-        newBlockLink.addEventListener("click", blockLinkClickHandler, false);
-        reviewTopBars[i].appendChild(newBlockLink);
+    var otherReviews = document.getElementById("reviews-other");
+    if (null != otherReviews) {
+        if (isLoggedIn()) {
+            var blockPara = document.createElement("p");
+            blockPara.setAttribute("class", "smallest reviewIntLinks");
+            blockPara.appendChild(blockLink);
+            
+            var reviewTopBars = otherReviews.getElementsByClassName("reviewTopBar");
+            for (var i=0; i < reviewTopBars.length; i++) {
+                var newBlockLink = blockPara.cloneNode(true);
+                newBlockLink.addEventListener("click", blockLinkClickHandler, false);
+                reviewTopBars[i].appendChild(newBlockLink);
+            }
+        } else {
+            var blockPara = document.createElement("p");
+            blockPara.setAttribute("class", "reviewer_info");
+            blockPara.appendChild(blockLink);
+            
+            var reviews = otherReviews.getElementsByClassName("reviewer");
+            for (var i=0; i < reviews.length; i++) {
+                var newBlockLink = blockPara.cloneNode(true);
+                newBlockLink.addEventListener("click", blockLinkClickHandler, false);
+                reviews[i].appendChild(newBlockLink);
+            }
+        }
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -239,7 +318,8 @@ function addBlockLinks() {
 var db = ywpSettings.getSettingsDatabase();
 if (null != db) {
     ywpSettings.initSettingsDatabase(db);
-    addBlockLinks();
-    removeReviews();
+    if (addBlockLinks()) {
+        removeReviews();
+    }
 }
 

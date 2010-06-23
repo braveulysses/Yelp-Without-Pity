@@ -8,9 +8,9 @@
 
 > _The lack of Diet Coke ruined this meal._
 
-Obnoxious Yelp reviewers getting you down?  Had an epiphany about the incommensurability of taste?  Sick of that guy who wants to be the Hunter S. Thompson of food reviews?  If you're running Safari 5, there's **Yelp Without Pity**.  Use YWP to hide anybody you don't want to see -- forever!
+Obnoxious Yelp reviewers getting you down?  Sick of that guy who wants to be the Hunter S. Thompson of food reviews?  Had an epiphany about the incommensurability of taste?  If you're running Safari 5, there's **Yelp Without Pity**.  Use YWP to hide anybody you don't want to see -- forever!
 
-If you're really old and nerdy, think of it as a killfile for Yelp.
+Or... if you're really old and nerdy, think of it as a killfile for Yelp.
 
 ## How to install and use ##
 
@@ -23,13 +23,11 @@ If you're really old and nerdy, think of it as a killfile for Yelp.
 
 ## Frequently Asked Questions ##
 
-_Do I really have to be logged in for this to work?_  Yes, but I might change that later.
-
 _I've changed my mind about blocking somebody. How do I unblock that person?_  There's currently no way to do that.
 
 _Really?_  Well, no.  But it's a pain.  You'd need to open the Web Inspector from Safari's Develop menu, then open the YWP settings database, and delete the user using a SQL query.
 
-_That's lame._  Yeah.
+_For crying out loud._  Yeah.
 
 ## License ##
 
