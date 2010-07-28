@@ -11,11 +11,13 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.9.2</string>
+	<string>0.9.3</string>
 	<key>CFBundleVersion</key>
-	<string>0.9.2</string>
+	<string>0.9.3</string>
 	<key>Chrome</key>
 	<dict>
+		<key>Database Quota</key>
+		<real>1048576</real>
 		<key>Global Page</key>
 		<string>yelpwithoutpity.html</string>
 	</dict>
@@ -50,6 +52,6 @@
 	<key>Update Manifest URL</key>
 	<string>http://cobralibre.github.com/Yelp-Without-Pity/ywp-updates.plist</string>
 	<key>Website</key>
-	<string>http://github.com/cobralibre/Yelp-Without-Pity</string>
+	<string>http://cobralibre.github.com/Yelp-Without-Pity/</string>
 </dict>
 </plist>
